@@ -1,0 +1,829 @@
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Volleyball Score Counter</title>
+    <script src="Vay.js"></script>
+
+    <style>
+        @font-face {
+            font-family: 'MakhinaFont';
+            src: url('./font/makhina.ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+        }
+        
+        @font-face {
+            font-family: 'SquareFont';
+            src: url('./font2/Square.ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+        }
+        
+        body {
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            position: relative;
+            font-family: 'SquareFont', sans-serif;
+        }
+        
+        body::-webkit-scrollbar {
+            display: none;
+        }
+        
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: url('assets/volleyball.jpg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            opacity: 0.4;
+            z-index: -1;
+            
+        }
+        
+        .content {
+            position: relative;
+            text-align: center;
+            color: black;
+            z-index: 1;
+            background: linear-gradient(300deg, rgb(242, 220, 147), #008aff, rgb(242, 220, 147));
+
+        }
+        
+        .head1 {
+            font-family: 'SquareFont', sans-serif;
+            display: inline-block;
+            padding: 10px;
+            margin-top: 10px;
+            font-size: large;
+            font-weight: 900;
+            max-width: 600px;
+
+        }
+        
+        .label-match-day {
+            font-family: 'SquareFont', sans-serif;
+            font-size: 2vh;
+            font-weight: 700;
+            margin: 16px;
+            padding: 4px;
+            font-family: 'SquareFont', serif;
+            font-size: large;
+            font-weight: 800;
+        }
+        
+        #match-day,
+        #day-o-w {
+            font-size: 2vh;
+            font-weight: 600;
+            font-family: 'SquareFont', sans-serif;
+            padding: 4px;
+            font-size: large;
+            font-weight: 800;
+            background: linear-gradient(300deg, rgb(242, 220, 147), #008aff, rgb(242, 220, 147));
+            border: 0.1rem solid;
+            border-color: linear-gradient(300deg, rgb(242, 220, 147), #008aff, rgb(242, 220, 147));
+            border-style: groove;
+            border-radius: 2.5%;
+        }
+        
+        .day-of-the-week {
+            margin-top: 24px;
+            display: flex;
+            flex-direction: column;
+            flex-flow: wrap;
+            text-align: center;
+        }
+        
+        .day {
+            margin-top: 24px;
+            display: flex;
+            flex-direction: row;
+            flex-flow: wrap;
+            text-align: center;
+        }
+        
+        .head2 {
+            background-color: tomato;
+            font-size: 1.8vh;
+        }
+        
+        @media all and (min-width: 600px) {
+            .aside-1 {
+                flex: 1;
+                order: 1;
+            }
+            .select-day {
+                order: 2;
+                flex: 3;
+                font-family: 'SquareFont', sans-serif;
+                padding: 4px;
+                font-size: large;
+                font-weight: 800;
+                max-width: 600px;
+
+            }
+            .aside-2 {
+                order: 3;
+                flex: 1;
+            }
+        }
+        
+        .match {
+            margin: 30px;
+            border-top: 2px solid black;
+            display: flex;
+            flex-direction: row;
+            flex-flow: wrap;
+            text-align: center;
+            font-family: 'SquareFont', sans-serif;
+            padding: 4px;
+            margin: 1vh;
+            font-size: large;
+            font-weight: 800;
+            background: linear-gradient(300deg, rgb(242, 220, 147), #008aff, rgb(242, 220, 147));
+            border: 0.1rem solid;
+            border-color: linear-gradient(300deg, rgb(242, 220, 147), #008aff, rgb(242, 220, 147));
+            border-style: groove;
+            border-radius: 2.5%;
+        }
+        
+        @media all and (min-width: 600px) {
+            .home {
+                flex: 1;
+                order: 1;
+                margin: 6px;
+                flex-direction: row;
+                flex-flow: wrap;
+                text-align: center;
+                font-family: 'SquareFont', sans-serif;
+                padding: 16px;
+                font-size: large;
+                font-weight: 800;
+
+            }
+            .middle {
+                flex: 1;
+                order: 2;
+            }
+            .away {
+                flex: 1;
+                order: 3;
+                margin: 6px;
+                flex-direction: row;
+                flex-flow: wrap;
+                text-align: center;
+                font-family: 'SquareFont', sans-serif;
+                padding: 16px;
+                font-size: large;
+                font-weight: 800;
+
+            }
+        }
+        
+        .home-logo {
+            margin-top: 8px;
+            margin-left: 4px;
+            flex: 1;
+            order: 1;
+            display: none;
+        }
+        
+        .away-logo {
+            margin-top: 8px;
+            margin-left: 4px;
+            flex: 1;
+            order: 1;
+            display: none;
+        }
+        
+        .team-side {
+            font-family: 'SquareFont', Times, serif;
+            font-size: 2vh;
+            font-weight: 700;
+        }
+        
+        #hteam {
+            margin-left: 8px;
+            font-size: 2vh;
+            font-weight: 600;
+            font-family: 'SquareFont', sans-serif;
+            padding: 4px;
+            font-size: large;
+            font-weight: 800;
+            background: linear-gradient(300deg, rgb(242, 220, 147), #008aff, rgb(242, 220, 147));
+            border: 0.1rem solid;
+            border-color: linear-gradient(300deg, rgb(242, 220, 147), #008aff, rgb(242, 220, 147));
+            border-style: groove;
+            border-radius: 2.5%;
+        }
+        
+        #ateam {
+            margin-left: 8px;
+            font-size: 2vh;
+            font-weight: 600;
+            font-family: 'SquareFont', sans-serif;
+            padding: 4px;
+            font-size: large;
+            font-weight: 800;
+            background: linear-gradient(300deg, rgb(242, 220, 147), #008aff, rgb(242, 220, 147));
+            border: 0.1rem solid;
+            border-color: linear-gradient(300deg, rgb(242, 220, 147), #008aff, rgb(242, 220, 147));
+            border-style: groove;
+            border-radius: 2.5%;
+        }
+        
+        .scoreboard {
+            width: 80vw;
+            max-width: 600px;
+            margin: 6vh auto;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .stats {
+            font-size: 2.6vh;
+        }
+        
+        .set-label {
+            font-size: 2vh;
+            font-weight: 700;
+        }
+        
+        #currentSet {
+            font-size: 1.8vh;
+            font-weight: 600;
+            margin-left: 8px;
+            font-size: 2vh;
+            font-weight: 600;
+            font-family: 'SquareFont', sans-serif;
+            padding: 4px;
+            font-size: large;
+            font-weight: 800;
+            background: linear-gradient(300deg, rgb(242, 220, 147), #008aff, rgb(242, 220, 147));
+            border: 0.1rem solid;
+            border-color: linear-gradient(300deg, rgb(242, 220, 147), #008aff, rgb(242, 220, 147));
+            border-style: groove;
+            border-radius: 2.5%;
+            display: inline-block;
+        }
+        
+        .team {
+            width: 100%;
+            margin: 2.8vh;
+            font-size: 1.4vh;
+            margin-left: 8px;
+            font-size: 2vh;
+            font-weight: 600;
+            font-family: 'SquareFont', sans-serif;
+            padding: 4px;
+            font-size: large;
+            font-weight: 800;
+            background: linear-gradient(300deg, rgb(242, 220, 147), #008aff, rgb(242, 220, 147));
+            border: 0.1rem solid;
+            border-color: linear-gradient(300deg, rgb(242, 220, 147), #008aff, rgb(242, 220, 147));
+            border-style: groove;
+            border-radius: 2.5%;
+            border-style: groove;
+        }
+        
+        .team h2 {
+            margin: 1vh 0;
+            color: #002244;
+        }
+        
+        .f1 {
+            flex: 1;
+            order: 1
+        }
+        
+        .kick-off {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            text-transform: uppercase;
+            margin: 1vh;
+            border-radius: 1vh;
+            font-size: 1.2vh;
+            cursor: pointer;
+            flex: 2;
+            order: 2;
+            margin: 15px;
+            font-family: 'SquareFont', sans-serif;
+            background: linear-gradient(300deg, rgb(242, 220, 147), #008aff, rgb(242, 220, 147));
+            border: 0.1rem solid;
+            border-color: linear-gradient(300deg, rgb(242, 220, 147), #008aff, rgb(242, 220, 147));
+            border-style: groove;
+            border-radius: 5%;
+        }
+        
+        .kick-off:disabled {
+            background-color: #cccccc;
+            color: #775577;
+            cursor: not-allowed;
+            opacity: 0.7;
+            border: 2px solid #cccccc;
+            border-radius: 2.5%;
+        }
+        
+        .f2 {
+            flex: 3;
+            order: 3;
+            border-bottom: 2px solid black;
+            ;
+        }
+        
+        .setScore {
+            margin: 36px;
+            width: 80%;
+            display: inline-block;
+        }
+        
+        .currentSetStats {
+            margin: 16px;
+            background-color: #007bff;
+            font-family: 'SquareFont', Times, serif;
+            font-size: xx-large;
+            font-weight: 800;
+            background: linear-gradient(300deg, rgb(242, 220, 147), #008aff, rgb(242, 220, 147));
+            border: 0.1rem solid;
+            border-color: linear-gradient(300deg, rgb(242, 220, 147), #008aff, rgb(242, 220, 147));
+            border-style: groove;
+            border-radius: 2.5%;
+            border-style: groove;
+        }
+        
+        .time-board {
+            margin: 2vh auto;
+            display: flex;
+            flex-direction: row;
+        }
+        
+        .t1 {
+            flex: 1;
+            order: 2;
+            max-width: 50px;
+            margin-left: 10px;
+            margin-right: 10px;
+            background-color: #007bff;
+            font-family: 'SquareFont', Times, serif;
+            font-size: xx-large;
+            font-weight: 800;
+            background: linear-gradient(300deg, rgb(242, 220, 147), #008aff, rgb(242, 220, 147));
+            border: 0.1rem solid;
+            border-color: linear-gradient(300deg, rgb(242, 220, 147), #008aff, rgb(242, 220, 147));
+            border-style: groove;
+            border-radius: 2.5%;
+            border-style: groove;
+        }
+        
+        #timer {
+            flex: 2;
+            order: 3;
+            max-width: 200px;
+            margin-left: 10px;
+            margin-right: 10px;
+            font-family: 'SquareFont', Times, serif;
+            font-size: xx-large;
+            font-weight: 800;
+            background: linear-gradient(300deg, rgb(242, 220, 147), #008aff, rgb(242, 220, 147));
+            border: 0.1rem solid;
+            border-color: linear-gradient(300deg, rgb(242, 220, 147), #008aff, rgb(242, 220, 147));
+            border-style: groove;
+            border-radius: 2.5%;
+            border-style: groove;
+        }
+        
+        .t2 {
+            flex: 1;
+            order: 4;
+            max-width: 50px;
+            margin-left: 10px;
+            margin-right: 10px;
+            background-color: #775577;
+            font-family: 'SquareFont', Times, serif;
+            font-size: xx-large;
+            font-weight: 800;
+            background: linear-gradient(300deg, rgb(242, 220, 147), #008aff, rgb(242, 220, 147));
+            border: 0.1rem solid;
+            border-color: linear-gradient(300deg, rgb(242, 220, 147), #008aff, rgb(242, 220, 147));
+            border-style: groove;
+            border-radius: 2.5%;
+            border-style: groove;
+        }
+        
+        .t1s,
+        .t2s {
+            font-family: 'SquareFont', Times, serif;
+            font-size: xx-large;
+            font-weight: 800;
+        }
+        
+        .t1s {
+            flex: 1;
+            order: 1;
+        }
+        
+        .t2s {
+            flex: 1;
+            order: 5;
+        }
+        
+        .scoreCounter {
+            background: linear-gradient(300deg, rgb(242, 220, 147), #008aff, rgb(242, 220, 147));
+            border: 0.1rem solid;
+            border-color: linear-gradient(300deg, rgb(242, 220, 147), #008aff, rgb(242, 220, 147));
+            border-style: groove;
+            border-radius: 2.5%;
+            margin: 30px;
+        }
+        
+        .setScore {
+            background: linear-gradient(300deg, rgb(242, 220, 147), #008aff, rgb(242, 220, 147));
+            border: 0.1rem solid;
+            border-color: linear-gradient(300deg, rgb(242, 220, 147), #008aff, rgb(242, 220, 147));
+            border-style: groove;
+            border-radius: 2.5%;
+            border-style: groove;
+            margin: 8px;
+        }
+        
+        .cd-wrapper {
+            width: 100vw;
+            max-width: 600px;
+            margin: 2vh auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .cd1 {
+            flex: 1;
+            order: 1;
+        }
+        
+        #cd-timer {
+            flex: 1;
+            order: 2;
+            padding: 3px;
+            background: linear-gradient(300deg, #00bfff, #ff4c68, #ef8172);
+            border: 0.1rem solid;
+            border-color: linear-gradient(300deg, rgb(242, 220, 147), #008aff, rgb(242, 220, 147));
+            border-style: groove;
+            border-radius: 2.5%;
+            border-style: groove;
+            font-family: 'SquareFont', sans-serif;
+            font-weight: 800;
+            font-size: x-large;
+        }
+        
+        .cd2 {
+            flex: 1;
+            order: 3;
+        }
+        
+        #score {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-size: 1.8vh;
+        }
+        
+        .btns-a,
+        .btns-b {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .timeout-a,
+        .timeout-b {
+            background: linear-gradient(300deg, #00bfff, #ff4c68, #ef8172);
+            border: 0.1rem solid;
+            border-color: linear-gradient(300deg, rgb(242, 220, 147), #008aff, rgb(242, 220, 147));
+            border-style: groove;
+            padding: 10px 20px;
+            text-transform: uppercase;
+            margin: 1vh;
+            border-radius: 1vh;
+            font-size: 1.2vh;
+            cursor: pointer;
+            display: block;
+            font-family: 'SquareFont', sans-serif;
+            font-weight: 800;
+            font-size: x-large;
+        }
+        
+        .timeout-a:disabled,
+        .timeout-b:disabled {
+            background-color: #cccccc;
+            color: #775577;
+            cursor: not-allowed;
+            opacity: 0.85;
+            border: 2px solid #cccccc;
+            font-family: 'SquareFont', sans-serif;
+            font-weight: 800;
+            font-size: large;
+        }
+        
+        .increase-a-score,
+        .increase-b-score {
+            background: linear-gradient(300deg, rgb(242, 220, 147), #008aff, rgb(242, 220, 147));
+            border: 0.1rem solid;
+            border-color: linear-gradient(300deg, rgb(242, 220, 147), #008aff, rgb(242, 220, 147));
+            border-style: groove;
+            padding: 10px 20px;
+            text-transform: uppercase;
+            margin: 1vh;
+            border-radius: 1vh;
+            font-size: 1.2vh;
+            cursor: pointer;
+            display: block;
+            font-family: 'SquareFont', sans-serif;
+            font-weight: 800;
+            font-size: x-large;
+            
+        }
+        
+        .increase-a-score:disabled,
+        .increase-b-score:disabled {
+            background-color: #cccccc;
+            color: #775577;
+            cursor: not-allowed;
+            opacity: 0.85;
+            border: 2px solid #cccccc;
+        }
+        
+        #download-results {
+            background: linear-gradient(300deg, rgb(242, 220, 147), #008aff, rgb(242, 220, 147));
+            border: 0.1rem solid;
+            border-color: linear-gradient(300deg, rgb(242, 220, 147), #008aff, rgb(242, 220, 147));
+            border-style: groove;
+            padding: 10px 20px;
+            text-transform: uppercase;
+            margin: 12px;
+            border-radius: 1vh;
+            font-size: 1.2vh;
+            cursor: pointer;
+            display: inline-block;
+            display: none;
+            font-family: 'SquareFont', sans-serif;
+            font-weight: 800;
+            font-size: x-large;
+        }
+        
+        #download-results:disabled {
+            background-color: #cccccc;
+            color: #775577;
+            cursor: not-allowed;
+            opacity: 0.85;
+            border: 2px solid #cccccc;
+        }
+        
+        #score-a,
+        #score-b {
+            font-size: 2vh;
+            padding: 1px;
+            margin-left: 8px;
+            font-size: 2vh;
+            font-weight: 600;
+            font-family: 'SquareFont', sans-serif;
+            padding: 4px;
+            font-size: x-large;
+            font-weight: 800;
+            background: linear-gradient(300deg, rgb(242, 220, 147), #008aff, rgb(242, 220, 147));
+            border: 0.1rem solid;
+            border-color: linear-gradient(300deg, rgb(242, 220, 147), #008aff, rgb(242, 220, 147));
+            border-style: groove;
+            border-radius: 2.5%;
+            border-style: groove;
+            display: inline-block;
+        }
+        
+        .set-div {
+            margin: 10px;
+            font-size: 2vh;
+            font-weight: 600;
+            font-family: 'SquareFont', sans-serif;
+            padding: 4px;
+            font-size: large;
+            font-weight: 800;
+            max-width: 600px;
+            background: linear-gradient(300deg, rgb(242, 220, 147), #008aff, rgb(242, 220, 147));
+            border: 0.1rem solid;
+            border-color: linear-gradient(300deg, rgb(242, 220, 147), #008aff, rgb(242, 220, 147));
+            border-style: groove;
+            border-radius: 2.5%;
+            border-style: groove;
+            display: inline-block;
+        }
+        
+        button:active {
+            background-color: #0056b3;
+        }
+        
+        @media (min-width: 600px) {
+            .scoreboard {
+                flex-direction: row;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="content">
+        <header class="head1">
+            <h1>Volleyball Score Counter</h1>
+        </header>
+
+
+        <div class="day-of-the-week">
+            <div class="select-day">
+                <label class="label-match-day" for="matchDay">Select the Day of the Week</label>
+                <select id="day-o-w">
+    <option value="0">-- none --</option>
+    <option value="1">Monday</option>
+    <option value="2">Tuesday</option>
+    <option value="3">Wednesday</option>
+    <option value="4">Thursday</option>
+    <option value="5">Friday</option>
+    <option value="6">Saturday</option>
+    <option value="7">Sunday</option>
+   </select>
+            </div>
+            <aside class="aside aside-1"></aside>
+            <aside class="aside aside-2"></aside>
+        </div>
+
+        <div class="day">
+            <div class="select-day">
+                <label class="label-match-day" for="matchDay">Select Match Day Number</label>
+                <select id="match-day">
+    <option value="0">-- none --</option>
+    <option value="1">1</option>
+    <option value="2">2</option>
+    <option value="3">3</option>
+    <option value="4">4</option>
+    <option value="5">5</option>
+    <option value="6">6</option>
+    <option value="7">7</option>
+    <option value="8">8</option>
+    <option value="9"> 9</option>
+    <option value="10">10</option>
+    <option value="11">11</option>
+    <option value="12">12</option>
+    <option value="13">13</option>
+    <option value="14">14</option>
+    <option value="15">15</option>
+    <option value="16">16</option>
+    <option value="17">17</option>
+    <option value="18">18</option>
+    <option value="19">19</option>
+    <option value="20">20</option>
+    <option value="21">21</option>
+    <option value="22">22</option>
+    <option value="23">23</option>
+    <option value="24">24</option>
+
+   </select>
+            </div>
+            <aside class="aside aside-1"></aside>
+            <aside class="aside aside-2"></aside>
+        </div>
+
+        <div class="Match">
+            <div class="home">
+                <label class="team-side" for="hteam">Home</label>
+                <select id="hteam">
+          <option value="none">-- none --</option>   
+          <option value="OSFP">OSFP</option>    
+          <option value="PAOK">PAOK</option>   
+          <option value="PAO">PAO</option>    
+          <option value="AEK">AEK</option>    
+          <option value="ARIS">ARIS</option>    
+          <option value="IRAKLIS">IRAKLIS</option>    
+          <option value="PERISTERI">PERISTERI</option>    
+          <option value="MAROUSI">MAROUSI</option>    
+          <option value="APOLLON KALAMARIAS">APOLLON KALAMARIAS</option>    
+          <option value="KOLOSSOS RODOU">KOLOSSOS RODOU</option>    
+          <option value="PANSERRAIKOS">PANSERRAIKOS</option> 
+          </select>
+                <div class="home-logo"></div>
+
+            </div>
+
+
+            <div class="middle"></div>
+
+
+
+            <div class="away">
+                <label class="team-side" for="ateam">Away</label>
+                <select id="ateam">
+                <option value="none">-- none --</option>   
+                <option value="OSFP">OSFP</option>    
+                <option value="PAOK">PAOK</option>   
+                <option value="PAO">PAO</option>    
+                <option value="AEK">AEK</option>    
+                <option value="ARIS">ARIS</option>    
+                <option value="IRAKLIS">IRAKLIS</option>    
+                <option value="PERISTERI">PERISTERI</option>    
+                <option value="MAROUSI">MAROUSI</option>    
+                <option value="APOLLON KALAMARIAS">APOLLON KALAMARIAS</option>    
+                <option value="KOLOSSOS RODOU">KOLOSSOS RODOU</option>    
+                <option value="PANSERRAIKOS">PANSERRAIKOS</option>
+        </select>
+                <div class="away-logo"></div>
+
+            </div>
+
+        </div>
+
+        <footer class="f1"></footer>
+
+        <footer class="define-matchup">
+            <button class="kick-off">Kick - Off</button>
+        </footer>
+
+        <footer class="f2"></footer>
+
+
+        <div class="scoreCounter">
+            <div class="set">
+                <div class="setScore">
+                    <h2 class="stats">Set Score</h2>
+                    <div class="time-board">
+                        <span class="t1s"></span>
+                        <aside class="t1">0</aside>
+                        <div id="timer">00:00:00</div>
+                        <span class="t2s"></span>
+                        <aside class="t2">0</aside>
+                    </div>
+                </div>
+                <div class="currentSetStats">
+                    <div class="set-div">
+                        <label class="set-label" for="currentSet">Current Set</label>
+                        <select id="currentSet">
+    <option value="Set 1">1</option>
+    <option value="Set 2">2</option>
+    <option value="Set 3">3</option>
+    <option value="Set 4">4</option>
+    <option value="Set 5">5</option>
+  </select>
+                    </div>
+
+                    <div class="cd-wrapper">
+                        <aside class="cd1"></aside>
+
+                        <div id="cd-timer">60</div>
+
+                        <aside class="cd2"></aside>
+                    </div>
+
+
+                </div>
+
+                <div class="set-win-div"></div>
+
+                <div class="scoreboard">
+                    <div class="team">
+                        <h2 class="a">Home</h2>
+                        <span id="score-a">0</span>
+                        <div class="btns-a">
+                            <button class="increase-a-score">Add Point</button>
+                            <button class="timeout-a">Call Timeout</button>
+                        </div>
+                    </div>
+
+                    <div class="team">
+                        <h2 class="b">Away</h2>
+                        <span id="score-b">0</span>
+                        <div class="btns-b">
+                            <button class="increase-b-score">Add Point</button>
+                            <button class="timeout-b">Call Timeout</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <p id="winningTeam"></p>
+
+            <button id="download-results">Click for Downloading the Results</button>
+
+
+        </div>
+</body>
+</div>
+
+</html>
